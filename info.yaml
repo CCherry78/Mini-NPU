@@ -17,7 +17,7 @@ documentation:
   author:       "Christian Cherry"      
   discord:      "daylightcherry"      
   title:        "Mini NPU"      
-  description:  "A mini neuro processing unit for motion detection"
+  description:  "A mini neural processing unit for motion detection"
   how_it_works: "I2C master takes in data from a 3-axis accelerometer and passes
                  it on to a spiking neural network, which detects spikes in 
                  direction to infer motion"
@@ -28,7 +28,12 @@ documentation:
                  the connected accelerometer in a single direction for at least
                  two seconds, and the connected LEDs will light up with binary 
                  values corresponding to the direction you swiped. Press the 
-                 stop button to end motion detection."      
+                 stop button to end motion detection.
+
+                 If testing with the testbench accelerometer_tb.py, copy the 
+                 design's SystemVerilog code into a file named 'mini_npu.sv' 
+                 and run 'make -Bf testbench.mk' on the design. 
+                 Having python3 and cocoTB installed is required."    
   external_hw:  "Pmod ADXL345 3-axis accelerometer: https://digilent.com/shop/pmod-acl-3-axis-accelerometer/"
   language:     "verilog, python(testbench)"
   doc_link:     "https://github.com/CCherry78/Mini-NPU/blob/main/README.md"
