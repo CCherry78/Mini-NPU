@@ -44,6 +44,8 @@ accumulates accumulates this data in its membrane potential with registers and c
 once the data for a specific axis and direction exceeds a certain threshold. This achieves the purpose
 of recognizing a swipe in a certain direction after many consecutive increasing or decreasing changes on an axis in space.
 
+![Mini_NPU_Block_Diagram](https://github.com/user-attachments/assets/6eeac52d-f10c-4090-ab64-a9753de1afba)
+
 ## IO
 
 An IO table listing all of your inputs and outputs and their function, like the one below:
