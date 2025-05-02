@@ -4,6 +4,7 @@ project:
     - toplevel_chip.v
     - chip.sv
     - decoder.v
+    - mini_npu.sv
   top_module:  "toplevel_chip"
 
 # As everyone will have access to all designs, try to make it easy for someone new to your design to know what
@@ -13,30 +14,39 @@ project:
 #
 # This info will be automatically collected and used to make a datasheet for the chip.
 documentation: 
-  author:       "PLACEHOLDER"      # Your name
-  discord:      ""      # Your discord handle
-  title:        "PLACEHOLDER"      # Project title
-  description:  "PLACEHOLDER"      # Short description of what your project does
-  how_it_works: "PLACEHOLDER"      # Longer description of how the project works
-  how_to_test:  "PLACEHOLDER"      # Instructions on how someone could test your project, include things like what buttons do what and how to set the clock if needed
-  external_hw:  "PLACEHOLDER"      # Describe any external hardware needed
-  language:     "verilog" # other examples include Verilog, Amaranth, VHDL, etc
-  doc_link:     ""      # URL to longer form documentation, eg the README.md in your repository
-  clock_hz:     1000       # Clock frequency in Hz (if required)
+  author:       "Christian Cherry"      
+  discord:      "daylightcherry"      
+  title:        "Mini NPU"      
+  description:  "A mini neuro processing unit for motion detection"
+  how_it_works: "I2C master takes in data from a 3-axis accelerometer and passes
+                 it on to a spiking neural network, which detects spikes in 
+                 direction to infer motion"
+  how_to_test:  "Connect an ADXL345 accelerometer with I2C to the appropriate
+                 pins as outlines in chip.sv. Note that io_in and io_out should
+                 be tied together for correct bidirectional functionality. Press
+                 the start button to begin motion detection. Continuously move 
+                 the connected accelerometer in a single direction for at least
+                 two seconds, and the connected LEDs will light up with binary 
+                 values corresponding to the direction you swiped. Press the 
+                 stop button to end motion detection."      
+  external_hw:  "Pmod ADXL345 3-axis accelerometer: https://digilent.com/shop/pmod-acl-3-axis-accelerometer/"
+  language:     "verilog, python(testbench)" # other examples include Verilog, Amaranth, VHDL, etc
+  doc_link:     "https://github.com/CCherry78/Mini-NPU/blob/main/README.md"
+  clock_hz:     10000000       
   picture:      ""      # relative path to a picture in your repository
   inputs:               # a description of what the inputs do
-    - none
-    - none
-    - none
+    - io_in[0] maps to SDA_in
+    - io_in[1] maps to start
+    - io_in[2] maps to stop
     - none
     - none
     - none
     - none
     - none
   outputs:
-    - none
-    - none
-    - none
+    - io_out[0] maps to SDA (output functionality)
+    - io_out[1] maps to SCL
+    - io_out[2:9] maps to LEDs
     - none
     - none
     - none

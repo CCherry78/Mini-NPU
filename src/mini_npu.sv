@@ -817,6 +817,7 @@ module Motion_Neuron (
   output logic fire // to Mini_NPU LED instantiation
 );
 
+  // Clock frequency of design
   logic [23:0] CLK_FRQ;
   assign CLK_FRQ = 24'd10000000; // 10MHz clock
 
@@ -940,9 +941,9 @@ module LED_Controller (
   output logic [7:0] LEDs // to Mini_NPU top module output
 );
 
-  // Maximun clock frequency of design, to be used in LED_Controller
-  logic [24:0] CLK_FREQ;
-  assign CLK_FREQ = 25'd10000000;
+  // Clock frequency of design
+  logic [23:0] CLK_FRQ;
+  assign CLK_FRQ = 24'd10000000; // 10MHz clock
 
   // status signals
   logic count_done;
@@ -956,7 +957,7 @@ module LED_Controller (
   // Counter for one second (time)
   always_ff @(posedge clock) begin
     if (~reset_n || count_reset || count_done) begin
-      count <= CLK_FREQ;
+      count <= CLK_FRQ;
     end
     else if (count_down) begin
       count <= count - 1;
