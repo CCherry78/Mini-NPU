@@ -30,11 +30,11 @@ documentation:
                  values corresponding to the direction you swiped. Press the 
                  stop button to end motion detection."      
   external_hw:  "Pmod ADXL345 3-axis accelerometer: https://digilent.com/shop/pmod-acl-3-axis-accelerometer/"
-  language:     "verilog, python(testbench)" # other examples include Verilog, Amaranth, VHDL, etc
+  language:     "verilog, python(testbench)"
   doc_link:     "https://github.com/CCherry78/Mini-NPU/blob/main/README.md"
   clock_hz:     10000000       
-  picture:      ""      # relative path to a picture in your repository
-  inputs:               # a description of what the inputs do
+  picture:      "https://github.com/CCherry78/Mini-NPU/tree/main/img"
+  inputs:       
     - io_in[0] maps to SDA_in
     - io_in[1] maps to start
     - io_in[2] maps to stop
