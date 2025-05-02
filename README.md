@@ -61,15 +61,12 @@ An IO table listing all of your inputs and outputs and their function, like the 
 
 ## How to Test
 
-Connect an ADXL345 accelerometer with I2C to the appropriate
-pins as outlines in chip.sv. Note that io_in and io_out should
-be tied together for correct bidirectional functionality. Press
-the start button to begin motion detection. Continuously move 
-the connected accelerometer in a single direction for at least
-two seconds, and the connected LEDs will light up with binary 
-values corresponding to the direction you swiped. Press the 
-stop button to end motion detection.
+Post-silicon testing:
+Connect an ADXL345 accelerometer with I2C to the appropriate pins as outlined in chip.sv. Note that io_in and io_out should be tied together for correct bidirectional functionality. Press the start button to begin motion detection. Continuously move the connected accelerometer in a single direction for at least two seconds, and the connected LEDs will light up with binary values corresponding to the direction you swiped. Press the stop button to end motion detection.
 
-If testing with the testbench accelerometer_tb.py, copy the design's 
-SystemVerilog code into a file named "mini_npu.sv" and run 
-"make -Bf testbench.mk" on the design. Having python3 and cocoTB installed is required.
+Testbench testing:
+If testing with the testbench accelerometer_tb.py, run 'make -Bf testbench.mk' on the design. Having python3 and cocoTB installed is required. The testbench acts as the accelerometer device, and checks that the design performs all I2C data interactions correctly, as in accordance with the UM10204 I2C-Bus Specification and User Manual, and checks that the design correctly detects motions based on the data that was given.
+
+FPGA testing:
+If testing with an FPGA, run yosys on the design with ‘read_verilog -sv mini_npu.sv’, then ‘synth_ecp5 -json synth_out.json -top Mini_NPU’. Exit yosys, then run ‘nextpnr-ecp5 --12k --json synth_out.json --lpf constraints.lpf --textcfg pnr_out.config’ with the provided constrains.lpf file (edit this as needed). Then run ‘ecppack --compress pnr_out.config bitstream.bit’ and then ‘fujprog bitstream.bit’ to load bitstream onto the FPGA.
+
