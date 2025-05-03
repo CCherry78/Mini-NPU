@@ -2,7 +2,7 @@
 
 /* Top Module for Mini_NPU design */
 module Mini_NPU (
-  input  logic clock, reset_n, start, stop,
+  input  logic clock, reset, start, stop,
   input  logic SDA_in,
   inout  wire  SDA,
   output logic SCL,
@@ -69,7 +69,7 @@ endmodule: Mini_NPU
 
 /* Module for protocol handling of data transfers */
 module Protocol_Handler (
-  input  logic clock, reset_n, start, stop, // from Mini_NPU top module
+  input  logic clock, reset, start, stop, // from Mini_NPU top module
   input  logic write_done, data_ready, read_done, abort, // from I2C_Master
   output logic write, poll, data_read // to I2C_Master 
 );
@@ -79,7 +79,7 @@ module Protocol_Handler (
 
   // write register
   always_ff @(posedge clock) begin
-    if (~reset_n || ~write_en) begin
+    if (reset || ~write_en) begin
       write <= 0;
     end
     else if (write_en) begin
@@ -92,7 +92,7 @@ module Protocol_Handler (
 
   // poll register
   always_ff @(posedge clock) begin
-    if (~reset_n || ~poll_en) begin
+    if (reset || ~poll_en) begin
       poll <= 0;
     end
     else if (poll_en) begin
@@ -105,7 +105,7 @@ module Protocol_Handler (
 
   // data_read register
   always_ff @(posedge clock) begin
-    if (~reset_n || ~data_read_en) begin
+    if (reset || ~data_read_en) begin
       data_read <= 0;
     end
     else if (data_read_en) begin
@@ -185,7 +185,7 @@ module Protocol_Handler (
 
   // State -> Next State Flip-Flop
   always_ff @(posedge clock) begin
-    if (~reset_n) begin
+    if (reset) begin
       ph_state <= RESET;
     end
     else begin
@@ -198,7 +198,7 @@ endmodule: Protocol_Handler
 
 /* Module for I2C master data communication functions */
 module I2C_Master (
-  input  logic clock, reset_n, stop, SDA_in, // from Mini_NPU top module
+  input  logic clock, reset, stop, SDA_in, // from Mini_NPU top module
                write, poll, data_read, // from Protocol_Hanlder
   inout  wire  SDA, // from Mini_NPU top module
   output logic SCL, // to Mini_NPU top module outputs
@@ -252,7 +252,7 @@ module I2C_Master (
 
   // Iteration Counter
   always_ff @(posedge clock) begin
-    if (~reset_n || i_clr) begin
+    if (reset || i_clr) begin
       iteration <= 0;
     end
     else if (i_up) begin
@@ -265,7 +265,7 @@ module I2C_Master (
 
   // Counter
   always_ff @(posedge clock) begin
-    if (~reset_n || count_reset) begin
+    if (reset || count_reset) begin
       count <= 4'd7;
     end
     else if (count_en) begin
@@ -278,7 +278,7 @@ module I2C_Master (
 
   // Data Counter
   always_ff @(posedge clock) begin
-    if (~reset_n || data_count_reset) begin
+    if (reset || data_count_reset) begin
       data_count <= 0;
     end
     else if (data_count_en) begin
@@ -619,7 +619,7 @@ module I2C_Master (
 
   // State -> Next State Flip-Flop
   always_ff @(posedge clock) begin
-    if (~reset_n) begin
+    if (reset) begin
       i2c_state <= INIT;
     end
     else begin
@@ -632,7 +632,7 @@ endmodule: I2C_Master
 
 /* Module for reacting to movement on a specific axis from accelerometer */
 module Axis_Neuron (
-  input  logic clock, reset_n, stop, // from Mini_NPU top module
+  input  logic clock, reset, stop, // from Mini_NPU top module
                data_avail, abort, // from I2C_Master
   input  logic [15:0] data, // from I2C_Master
   output logic activate1, activate2 // to Motion_Neuron modules 
@@ -648,7 +648,7 @@ module Axis_Neuron (
 
   // data1 Register
   always_ff @(posedge clock) begin
-    if (~reset_n || d1_clr) begin
+    if (reset || d1_clr) begin
       data1 <= 0;
     end
     else if (d1_en) begin
@@ -661,7 +661,7 @@ module Axis_Neuron (
 
   // data2_next Register
   always_ff @(posedge clock) begin
-    if (~reset_n || d2n_clr) begin
+    if (reset || d2n_clr) begin
       data2_next <= 0;
     end
     else if (d2n_en) begin
@@ -674,7 +674,7 @@ module Axis_Neuron (
 
   // data2 Register
   always_ff @(posedge clock) begin
-    if (~reset_n || d2_clr) begin
+    if (reset || d2_clr) begin
       data2 <= 0;
     end
     else if (d2_en) begin
@@ -799,7 +799,7 @@ module Axis_Neuron (
 
   // State -> Next State Flip-Flop
   always_ff @(posedge clock) begin
-    if (~reset_n) begin
+    if (reset) begin
       an_state <= WAITING;
     end
     else begin
@@ -812,7 +812,7 @@ endmodule: Axis_Neuron
 
 /* Module for detecting sustained movement in a specific direction from accelerometer */
 module Motion_Neuron (
-  input  logic clock, reset_n, // from Mini_NPU top module
+  input  logic clock, reset, // from Mini_NPU top module
                activated, // from Axis_Neuron modules
   output logic fire // to Mini_NPU LED instantiation
 );
@@ -829,7 +829,7 @@ module Motion_Neuron (
 
   // Cycle counter
   always_ff @(posedge clock) begin
-    if (~reset_n || cycle_reset || accum_up || accum_down) begin
+    if (reset || cycle_reset || accum_up || accum_down) begin
       cycle <= 0;
     end
     else if (cycle_en) begin
@@ -852,7 +852,7 @@ module Motion_Neuron (
 
   // Accumulation counter
   always_ff @(posedge clock) begin
-    if (~reset_n || accum_reset) begin
+    if (reset || accum_reset) begin
       accum <= 0;
     end
     else if (accum_up && accum_down) begin
@@ -923,7 +923,7 @@ module Motion_Neuron (
 
   // State -> Next State Flip-Flop
   always_ff @(posedge clock) begin
-    if (~reset_n) begin
+    if (reset) begin
       mn_state <= IDLE;
     end
     else begin
@@ -936,7 +936,7 @@ endmodule: Motion_Neuron
 
 /* Module for logic controlling LEDs */
 module LED_Controller (
-  input  logic clock, reset_n, // from Mini_NPU top module
+  input  logic clock, reset, // from Mini_NPU top module
   input  logic [7:0] fired_array, // array from Motion_Neuron modules
   output logic [7:0] LEDs // to Mini_NPU top module output
 );
@@ -956,7 +956,7 @@ module LED_Controller (
 
   // Counter for one second (time)
   always_ff @(posedge clock) begin
-    if (~reset_n || count_reset || count_done) begin
+    if (reset || count_reset || count_done) begin
       count <= CLK_FRQ;
     end
     else if (count_down) begin
@@ -979,7 +979,7 @@ module LED_Controller (
 
   // LED register
   always_ff @(posedge clock) begin
-    if (~reset_n || led_reset) begin
+    if (reset || led_reset) begin
       LEDs <= 0;
     end
     else if (led_en) begin
@@ -1030,7 +1030,7 @@ module LED_Controller (
 
   // State -> Next State Flip-Flop
   always_ff @(posedge clock) begin
-    if (~reset_n) begin
+    if (reset) begin
       led_state <= CLEAR;
     end
     else begin
@@ -1043,12 +1043,12 @@ endmodule: LED_Controller
 
 /* Module for serial-in-parallel-out shift register */
 module ShiftRegisterSIPO
- (input logic clock, reset_n,
+ (input logic clock, reset,
               en, shift_clr, serial_bit,
   output logic [7:0] Q);
 
   always_ff @(posedge clock) begin
-    if (~reset_n || shift_clr) begin
+    if (reset || shift_clr) begin
         Q <= 0;
     end
     else if (en) begin // Left shift in on LSB

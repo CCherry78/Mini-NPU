@@ -348,10 +348,10 @@ async def basic_test(dut):
     await FallingEdge(dut.clock)
 
     # Reset the DUT
-    dut.reset_n.value = False
+    dut.reset.value = True
     await FallingEdge(dut.clock)
     await FallingEdge(dut.clock)
-    dut.reset_n.value = True
+    dut.reset.value = False
 
     assert dut.start.value == False
     assert dut.stop.value == False

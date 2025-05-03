@@ -8,7 +8,7 @@ module my_chip (
     input logic reset // Important: Reset is ACTIVE-HIGH
 );
     
-    Mini_NPU npu(.clock(clock), .reset_n(~reset),
+    Mini_NPU npu(.clock(clock), .reset(reset),
                  .start(io_in[1]), .stop(io_in[2]),
                  .SDA_in(io_in[0]), .SDA(io_out[0]), .SCL(io_out[1]),
                  .LEDs(io_out[2:9]));
