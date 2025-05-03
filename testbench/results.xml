@@ -1,0 +1,6 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1746251736" />
+    <testcase name="basic_test" classname="accelerometer_tb" file="/afs/andrew.cmu.edu/usr19/ccherry2/private/18224/Mini-NPU/testbench/accelerometer_tb.py" lineno="331" time="20.97684121131897" sim_time_ns="14553900.001" ratio_time="693807.9882659744" />
+  </testsuite>
+</testsuites>
